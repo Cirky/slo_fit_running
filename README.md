@@ -21,8 +21,6 @@ conditions.
 | `helper_functions.py` | Shared model fitting, cross-validation, early-stopping, percentile, and GCC helper code. |
 | `height_gcc_repeat.py` | Standalone GCC evaluation script for complete age trajectories. |
 | `plot_individuals.py` | Generates percentile-based individual trajectory plots. |
-| `csv_to_latex_AB.py` | Converts experiment result CSV files into LaTeX A-by-B age-window tables. |
-| `csv_to_latex_BC.py` | Converts experiment result CSV files into LaTeX B-by-C target-age tables. |
 
 ## Installation
 
@@ -79,6 +77,7 @@ The derived JSON has one record per child and stores age-aligned values for ages
     "sex": 1,
     "birth": "YYYY-MM-DD",
     "data": {
+      "height": [null, 1331.3, "..."],
       "dash_60m": [null, 123.4, "..."],
       "run_600m": [null, 210.5, "..."]
     }
@@ -120,13 +119,6 @@ dash_60m, run_600m
    python plot_individuals.py
    ```
 
-6. Convert result CSV files to manuscript tables when needed:
-
-   ```bash
-   python csv_to_latex_AB.py
-   python csv_to_latex_BC.py
-   ```
-
 ## Reproducibility Notes
 
 The scripts expose the main experimental settings near the top of each file,
@@ -137,9 +129,3 @@ Because the database is restricted, this public repository supports code review
 and methodological inspection. Full numerical reproduction requires access to
 the same SLOFIT data release and the preprocessing choices encoded in
 `dataset_refactoring.py`.
-
-## Restricted Files
-
-Do not commit raw or derived individual-level SLOFIT data to this repository.
-The `.gitignore` file excludes the expected raw CSV, derived JSON files, and
-common result artifacts by default.
