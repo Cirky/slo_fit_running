@@ -179,3 +179,17 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+submission_paper.pdf
+
+# Local IDE metadata
+.idea/
+
+# Restricted SLOFIT data and derived individual-level files
+SLOFIT_LONG_COMPLETE_anon_*.csv
+slofit_refactored*.json
+
+# Generated analysis outputs
+experiment_results*.csv
+gcc_predictions.csv
+gcc_summary.csv
