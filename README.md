@@ -1,30 +1,34 @@
 # SLOFIT Running Performance Analysis
 
-This repository contains the analysis code accompanying the manuscript on
-longitudinal prediction of youth running performance from SLOFIT measurements.
-It is intended to make the computational workflow inspectable for reviewers and
-readers.
+This repository contains code accompanying the manuscript on predicting
+60-meter dash and 600-meter run performance from longitudinal SLOFIT
+measurements. It includes data preparation, model evaluation, and scripts
+used to produce supporting figures and tables.
 
-The SLOFIT database is not included in this repository because it cannot be
-redistributed publicly. The scripts therefore cannot be run end-to-end unless
-the user has independently obtained access to the restricted data from the data
-owner or through the manuscript authors, subject to the applicable data access
-conditions.
+Individual-level SLOFIT data are restricted and are not included in this
+repository. Running the analyses requires authorized access to the data.
 
 ## Repository Contents
 
 | File | Purpose |
 | --- | --- |
-| `dataset_refactoring.py` | Converts the restricted raw SLOFIT longitudinal CSV into the aligned JSON format used by the experiments. |
-| `training_pipeline.py` | Main model comparison pipeline for age-window prediction and MAE plots. |
-| `training_automated.py` | Batch experiment runner that writes tabular results to `experiment_results.csv`. |
-| `helper_functions.py` | Shared model fitting, cross-validation, early-stopping, percentile, and GCC helper code. |
-| `height_gcc_repeat.py` | Standalone GCC evaluation script for complete age trajectories. |
-| `plot_individuals.py` | Generates percentile-based individual trajectory plots. |
+| `dataset_refactoring.py` | Converts the raw longitudinal CSV into age-aligned participant records. Cohort completeness criteria are configured in the script. |
+| `label_interpolated_values.py` | Builds a complete annual age grid for the selected cohort and records which measurements were interpolated. |
+| `training_automated.py` | Evaluates prediction models across running tests, observation windows, target ages, and participant groups; writes the results to CSV. |
+| `helper_functions.py` | Provides shared model-fitting utilities and the percentile and Growth Curve Comparison estimators. |
+| `training_pipeline.py` | Runs model comparisons and produces MAE plots for configured prediction settings. |
+| `generate_corrected_supplementary_figures.py` | Produces prediction-error curves and supplementary figure files. |
+| `generate_rmse_supplementary_tables.py` | Computes RMSE and relative prediction error and generates Supplementary Tables S5–S8. |
+| `recompute_selection_bias_tables.py` | Compares age-18 running performance between children included in and excluded from the study cohort for Supplementary Tables S9–S10. |
+| `summarize_interpolated_running_measurements.py` | Summarizes interpolated running measurements by age for Supplementary Table S11. |
+| `height_gcc_repeat.py` | Evaluates Growth Curve Comparison on complete height trajectories. |
+| `plot_individuals.py` | Produces illustrative plots of individual performance trajectories. |
+| `requirements.txt` | Lists the Python dependencies. |
 
 ## Installation
 
-Create a clean Python environment and install the dependencies:
+Python 3.10 or newer is recommended. Create an environment and install the
+dependencies:
 
 ```bash
 python -m venv .venv
@@ -32,14 +36,8 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-On Windows PowerShell, activate the environment with:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
-
-Python 3.10 or newer is recommended.
+On Windows PowerShell, activate the environment with
+`.\.venv\Scripts\Activate.ps1`.
 
 ## Data Availability
 
@@ -93,39 +91,25 @@ polygon_backwards, situps_60s, sit_and_reach, bent_arm_hang,
 dash_60m, run_600m
 ```
 
-## Typical Workflow
+## Analysis workflow
 
-1. Obtain authorized access to the restricted SLOFIT data.
-2. Place the raw CSV outside the repository at the path expected by
-   `dataset_refactoring.py`.
-3. Run preprocessing:
+After preparing the selected cohort, run
+`label_interpolated_values.py` with the cohort JSON and authorized raw CSV.
+The resulting age-aligned, labeled JSON is the default input to
+`training_automated.py`. Configure the target test, target ages, observation
+windows, participant group, models, and result filename near the top of that
+script.
 
-   ```bash
-   python dataset_refactoring.py
-   ```
+The scripts for supplementary figures and tables read the applicable
+analysis data or results. `recompute_selection_bias_tables.py` additionally
+requires a file identifying children excluded by the completeness criterion.
+`generate_rmse_supplementary_tables.py` writes generated tables into
+`supplementary_files.tex`, which must be available when that script is run.
+Check the input and output paths in each script before execution.
 
-4. Rename the generated JSON if needed:
+## Reproducibility
 
-   ```bash
-   mv slofit_refactored.json slofit_refactored_37311.json
-   ```
-
-5. Run the desired analysis script:
-
-   ```bash
-   python training_pipeline.py
-   python training_automated.py
-   python height_gcc_repeat.py
-   python plot_individuals.py
-   ```
-
-## Reproducibility Notes
-
-The scripts expose the main experimental settings near the top of each file,
-including selected features, targets, model configurations, cross-validation
-folds, random seeds, and output paths.
-
-Because the database is restricted, this public repository supports code review
-and methodological inspection. Full numerical reproduction requires access to
-the same SLOFIT data release and the preprocessing choices encoded in
-`dataset_refactoring.py`.
+The repository provides the computational methods for inspection. Numerical
+reproduction requires authorized access to the SLOFIT data, the study cohort
+and exclusion records, and the experiment settings reported in the
+manuscript.
