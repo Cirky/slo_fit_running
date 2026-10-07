@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it."
+type: software
+title: "SLOFIT Running Performance Analysis"
+authors:
+  - given-names: Maj
+    family-names: Zirkelbach
+    affiliation: "University of Ljubljana, Faculty of Computer and Information Science"
+repository-code: "https://github.com/Cirky/slo_fit_running"
+license: MIT
