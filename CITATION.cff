@@ -8,3 +8,20 @@ authors:
     affiliation: "University of Ljubljana, Faculty of Computer and Information Science"
 repository-code: "https://github.com/Cirky/slo_fit_running"
 license: MIT
+version: 1.0.0
+
+preferred-citation:
+  type: unpublished
+  title: "Machine Learning Enhances the Forecasting of Running Performance as an Indicator of Physical Fitness in Low-Fit Children"
+  authors:
+    - given-names: Maj
+      family-names: Zirkelbach
+    - given-names: Gregor
+      family-names: Jurak
+    - given-names: Maroje
+      family-names: Sorić
+    - given-names: Anton
+      family-names: Gradišek
+    - given-names: Vida
+      family-names: Groznik
+  year: 2026
