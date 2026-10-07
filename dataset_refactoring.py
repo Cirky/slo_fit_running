@@ -4,6 +4,27 @@ import numpy as np
 import datetime
 
 
+METRICS = [
+    "height",
+    "weight",
+    "triceps_skinfold",
+    "arm_plate_tapping",
+    "broad_jump",
+    "polygon_backwards",
+    "situps_60s",
+    "sit_and_reach",
+    "bent_arm_hang",
+    "dash_60m",
+    "run_600m"
+]
+
+# Set this to METRICS for the original 37,311-child dataset, or to
+# ["dash_60m", "run_600m"] to exclude only based on running completeness.
+MISSINGNESS_FILTER_METRICS = []
+MIN_NON_MISSING_VALUES = 7
+OUTPUT_JSON = "slofit_refactored.json"
+
+
 def compute_age_years(df):
     # Calculate age in years (with decimals)
     df['AGE_YEARS'] = (df['measurement_date'] - df['birth_date']).dt.days / 365
@@ -76,19 +97,7 @@ def main():
 
 
     # 5. Define the metric columns we want to turn into year‑indexed lists
-    metrics = [
-        "height",
-        "weight",
-        "triceps_skinfold",
-        "arm_plate_tapping",
-        "broad_jump",
-        "polygon_backwards",
-        "situps_60s",
-        "sit_and_reach",
-        "bent_arm_hang",
-        "dash_60m",
-        "run_600m"
-    ]
+    metrics = METRICS
 
     # Compute fractional age in years and restrict to 6–19 inclusive
     df["AGE_YEARS"] = ((df["measurement_date"] - df["birth_date"]).dt.total_seconds()
@@ -102,6 +111,17 @@ def main():
     for cid, sub in df.groupby("CROWD_ID"):
         sex = sub.sex.iloc[0]
         birth = sub.birth_date.iloc[0].date().isoformat()
+        sub = sub.sort_values("AGE_YEARS")
+
+        # Represent every nominal year explicitly before handling missing data.
+        # Otherwise, adjacent rows can skip one or more ages and a multi-year
+        # gap can be mistaken for a single missing value.
+        observed_age_offset = (sub["AGE_YEARS"] - sub["age"]).median()
+        sub = sub.set_index("age").reindex(range(6, 20))
+        sub["age"] = sub.index.astype(int)
+        sub["AGE_YEARS"] = sub["AGE_YEARS"].fillna(
+            pd.Series(sub.index + observed_age_offset, index=sub.index)
+        )
         sub = sub.sort_values("AGE_YEARS")
         # Copy and interpolate each metric linearly, interior only
         sub_interp = sub.copy()
@@ -134,7 +154,7 @@ def main():
             #     print(metric_values)
             # If too many missing values, drop this child
             non_missing = ser.notna().sum()
-            if non_missing <= 6:
+            if feat in MISSINGNESS_FILTER_METRICS and non_missing < MIN_NON_MISSING_VALUES:
                 # print(f"Dropping child {cid} — feature {feat} has {non_missing} values")
                 drop_child = True
                 break
@@ -193,10 +213,10 @@ def main():
         }
 
     # 7. Dump to a JSON file
-    with open("slofit_refactored.json", "w") as f:
+    with open(OUTPUT_JSON, "w") as f:
         json.dump(children, f, indent=2, default=_json_convert)
 
-    print("Wrote", len(children), "children to slofit_refactored.json")
+    print("Wrote", len(children), "children to", OUTPUT_JSON)
 
 def _json_convert(obj):
     """
