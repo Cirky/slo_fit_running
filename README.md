@@ -103,8 +103,6 @@ script.
 The scripts for supplementary figures and tables read the applicable
 analysis data or results. `recompute_selection_bias_tables.py` additionally
 requires a file identifying children excluded by the completeness criterion.
-`generate_rmse_supplementary_tables.py` writes generated tables into
-`supplementary_files.tex`, which must be available when that script is run.
 Check the input and output paths in each script before execution.
 
 ## Reproducibility
