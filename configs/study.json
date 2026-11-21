@@ -1,0 +1,53 @@
+{
+  "profile": "reported_revision_365_day_alignment",
+  "preprocessing": {
+    "nominal_age_min": 6,
+    "nominal_age_max": 19,
+    "chronological_age_min": 6,
+    "chronological_age_max": 19,
+    "minimum_observed_values_per_metric": 7,
+    "completeness_metrics": ["height", "weight", "triceps_skinfold", "arm_plate_tapping", "broad_jump", "polygon_backwards", "situps_60s", "sit_and_reach", "bent_arm_hang", "dash_60m", "run_600m"],
+    "duplicate_policy": "exclude_child_with_any_duplicate_nominal_age",
+    "require_nominal_age_18_row": true,
+    "age_year_days": 365,
+    "alignment_tolerance_years": 0.16666666666666666,
+    "aligned_ages": [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+    "round_decimals": 1
+  },
+  "expected_counts": {
+    "candidates_after_duplicate_and_age18_row_rules": 120406,
+    "candidates_after_chronological_age_restriction": 120377,
+    "selected_source_cohort": 37311,
+    "excluded_source_cohort": 83066,
+    "valid_age18_either_running_target": 32288,
+    "valid_age18_dash_60m": 31546,
+    "valid_age18_run_600m": 31408,
+    "valid_age18_either_boys": 16258,
+    "valid_age18_either_girls": 16030
+  },
+  "experiments": {
+    "targets": ["dash_60m", "run_600m"],
+    "sexes": [1, 2],
+    "cv_folds": 5,
+    "cv_random_state": 42,
+    "estimator_random_state": 42,
+    "xgb_n_jobs": 4,
+    "gcc_neighbors": 200,
+    "exclude_injected_latest": true,
+    "early_stopping": {
+      "validation_fraction": 0.2,
+      "hgb_patience": 20,
+      "gb_patience": 15,
+      "xgb_patience": 40,
+      "xgb_max_estimators": 100,
+      "xgb_validation_split_seed": 1
+    },
+    "jobs": {
+      "tables_ab": {"group": "bottom", "models": ["HGB"], "target_ages": [18], "windows": "all_contiguous"},
+      "tables_bc": {"group": "bottom", "models": ["HGB"], "target_ages": [9, 10, 11, 12, 13, 14, 15, 16, 17, 18], "windows": "begin_at_8"},
+      "curves_bottom": {"group": "bottom", "models": ["LR", "HGB", "GB", "XGB", "Percentile", "GCC"], "target_ages": [18], "windows": "begin_at_8"},
+      "curves_all": {"group": "all", "models": ["LR", "HGB", "GB", "XGB", "Percentile", "GCC"], "target_ages": [18], "windows": "begin_at_8"},
+      "curves_top": {"group": "top", "models": ["LR", "HGB", "GB", "XGB", "Percentile", "GCC"], "target_ages": [18], "windows": "begin_at_8"}
+    }
+  }
+}

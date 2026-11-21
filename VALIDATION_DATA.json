@@ -1,0 +1,26 @@
+{
+  "profile": "reported_revision_365_day_alignment",
+  "counts": {
+    "candidates_after_duplicate_and_age18_row_rules": 120406,
+    "candidates_after_chronological_age_restriction": 120377,
+    "selected_source_cohort": 37311,
+    "excluded_source_cohort": 83066,
+    "valid_age18_dash_60m": 31546,
+    "valid_age18_run_600m": 31408,
+    "valid_age18_either_running_target": 32288,
+    "valid_age18_either_girls": 16030,
+    "valid_age18_either_boys": 16258
+  },
+  "raw_csv_sha256": "876675c9044c45db31c2fae730fdaa2bdf2497930228c293fd705e4697399444",
+  "exact_private_reference_match": true,
+  "selection": "observed pre-interpolation coverage across nominal ages 6..19; 7 or more values in every metric",
+  "note": "37311 is the retained source cohort; 32288 have at least one valid aligned age-18 running target.",
+  "historical_input_exact_reference_match": true,
+  "calendar_sensitivity_exact_prior_reference_match": true,
+  "boundary_sensitivity_matches_prior_40_window_comparisons": true,
+  "unit_tests_passed": 6,
+  "exploratory_feature_profiles": 8,
+  "archived_feature_tasks": 8030,
+  "feature_runner_checks": "one configuration executed for a historical profile and one for the revised profile; full exploratory reruns are optional",
+  "data_access": "No individual-level data are included in this package."
+}

@@ -1,0 +1,26 @@
+{
+  "main_curves.csv": {
+    "source_filename": "main_figures_corrected_no_injected.csv",
+    "sha256": "5fc76073aa147c89e34535c2edf25354a0fb285b98bf3b64301f67b0dedfe274"
+  },
+  "tables_ab.csv": {
+    "source_filename": "supplementary_AB_all_corrected_no_injected.csv",
+    "sha256": "dfa0c6cc7f44e9305ca114198e148e67ab2ffb146f05d700f3aace5db8627f41"
+  },
+  "tables_bc.csv": {
+    "source_filename": "supplementary_BC_all_corrected_no_injected.csv",
+    "sha256": "faab135b786ce0afe01a5b8691fa2ded2abba4ef7f4fe040d50bf2410e463acc"
+  },
+  "supplement_curves.csv": {
+    "source_filename": "supplementary_figures_corrected_no_injected.csv",
+    "sha256": "4d7ebe89b9704909914af4be718ef4814e4aaf404c6af40a4b3c21926697cdeb"
+  },
+  "selection_bias.csv": {
+    "source_filename": "supplementary_selection_bias_corrected.csv",
+    "sha256": "4b9b496cd8d0ee571d4362387f9cc5c6819e1e6334ce9ff6215ff5864efcdff3"
+  },
+  "interpolation_frequency.csv": {
+    "source_filename": "supplementary_interpolated_running_measurements.csv",
+    "sha256": "f5b0cd9506af70f80e19f9fb7b5d52602dddfbdbd440d13905983a9097aa75a6"
+  }
+}

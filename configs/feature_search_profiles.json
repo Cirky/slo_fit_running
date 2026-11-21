@@ -1,0 +1,74 @@
+{
+  "experiment_results_features": {
+    "source_result_filename": "experiment_results_features.csv",
+    "input_filename": "historical_feature_dataset.json",
+    "group": "all",
+    "exclude_injected_latest": false,
+    "estimator_random_state_for_repeatable_rerun": 42,
+    "historical_random_state_recovered": false,
+    "note": "Archived task definitions; historical exploratory numeric outputs are not asserted bit-for-bit reproducible."
+  },
+  "experiment_results_features_60": {
+    "source_result_filename": "experiment_results_features_60.csv",
+    "input_filename": "historical_feature_dataset.json",
+    "group": "all",
+    "exclude_injected_latest": false,
+    "estimator_random_state_for_repeatable_rerun": 42,
+    "historical_random_state_recovered": false,
+    "note": "Archived task definitions; historical exploratory numeric outputs are not asserted bit-for-bit reproducible."
+  },
+  "experiment_results_features_more": {
+    "source_result_filename": "experiment_results_features_more.csv",
+    "input_filename": "historical_feature_dataset.json",
+    "group": "all",
+    "exclude_injected_latest": false,
+    "estimator_random_state_for_repeatable_rerun": 42,
+    "historical_random_state_recovered": false,
+    "note": "Archived task definitions; historical exploratory numeric outputs are not asserted bit-for-bit reproducible."
+  },
+  "experiment_results_features_600-n": {
+    "source_result_filename": "experiment_results_features_600-n.csv",
+    "input_filename": "historical_feature_dataset.json",
+    "group": "all",
+    "exclude_injected_latest": false,
+    "estimator_random_state_for_repeatable_rerun": 42,
+    "historical_random_state_recovered": false,
+    "note": "Archived task definitions; historical exploratory numeric outputs are not asserted bit-for-bit reproducible."
+  },
+  "experiment_results_features_600": {
+    "source_result_filename": "experiment_results_features_600.csv",
+    "input_filename": "historical_feature_dataset.json",
+    "group": "all",
+    "exclude_injected_latest": false,
+    "estimator_random_state_for_repeatable_rerun": 42,
+    "historical_random_state_recovered": false,
+    "note": "Archived task definitions; historical exploratory numeric outputs are not asserted bit-for-bit reproducible."
+  },
+  "experiment_results_features_60_bottom": {
+    "source_result_filename": "experiment_results_features_60_bottom.csv",
+    "input_filename": "historical_feature_dataset.json",
+    "group": "bottom",
+    "exclude_injected_latest": false,
+    "estimator_random_state_for_repeatable_rerun": 42,
+    "historical_random_state_recovered": false,
+    "note": "Archived task definitions; historical exploratory numeric outputs are not asserted bit-for-bit reproducible."
+  },
+  "experiment_results_features_600_bottom": {
+    "source_result_filename": "experiment_results_features_600_bottom.csv",
+    "input_filename": "historical_feature_dataset.json",
+    "group": "bottom",
+    "exclude_injected_latest": false,
+    "estimator_random_state_for_repeatable_rerun": 42,
+    "historical_random_state_recovered": false,
+    "note": "Archived task definitions; historical exploratory numeric outputs are not asserted bit-for-bit reproducible."
+  },
+  "experiment_results_features_600_bottom_future_no_injected_latest": {
+    "source_result_filename": "experiment_results_features_600_bottom_future_no_injected_latest.csv",
+    "input_filename": "study_dataset.json",
+    "group": "bottom",
+    "exclude_injected_latest": true,
+    "estimator_random_state_for_repeatable_rerun": 42,
+    "historical_random_state_recovered": false,
+    "note": "Archived task definitions; historical exploratory numeric outputs are not asserted bit-for-bit reproducible."
+  }
+}

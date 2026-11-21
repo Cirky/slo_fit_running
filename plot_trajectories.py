@@ -1,133 +1,15 @@
-# python
+"""Recreate the seeded illustrative trajectory plots using the supplied data."""
+from pathlib import Path
+import argparse
+import json
+import random
+from typing import Iterable,List,Dict
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import random
-from typing import Iterable, List, Dict
-import json
-
-def plot_percentile_individuals(
-    df: pd.DataFrame,
-    events: Iterable[str] = ("dash_60m", "run_600m"),
-    sexes: Iterable[int] = (1, 2),
-    ages: List[int] = list(range(8, 19)),
-    percentiles: Iterable[int] = (10, 50, 90),
-    require_complete: bool = True,
-    random_state: int = 42,
-    top_k_candidates: int = 5,
-    figsize=(12, 8)
-) -> Dict[str, Dict[int, Dict[int, int]]]:
-    """
-    For each (sex, event) produce one plot line for a random individual near each percentile
-    (based on measurement at age 8). Returns dict of selected child_ids.
-    """
-
-    np.random.seed(random_state)
-    random.seed(random_state)
-
-    results = {}
-
-    fig, axes = plt.subplots(2, 2, figsize=figsize, sharex=True)
-    axes = axes.flatten()
-
-    # Mapping subplot positions
-    plot_idx = {
-        (1, events[0]): 0, (2, events[0]): 1,
-        (1, events[1]): 2, (2, events[1]): 3,
-    }
-
-    colors = {10: "tab:orange", 50: "tab:green", 90: "tab:red"}
-    markers = {10: "o", 50: "s", 90: "D"}
-
-    for ev in events:
-        results[ev] = {}
-        ev_cols = [f"{ev}_{a}" for a in ages]
-
-        for sex in sexes:
-            results[ev][sex] = {}
-
-            df_sex = df[df.sex == sex].copy()
-            if df_sex.empty:
-                continue
-
-            # --- Filter candidates ---
-            if require_complete:
-                df_candidates = df_sex.dropna(subset=ev_cols).copy()
-            else:
-                df_candidates = df_sex[df_sex[f"{ev}_8"].notna()].copy()
-
-            if df_candidates.empty:
-                print(f"No data for sex={sex}, event={ev} after filtering.")
-                continue
-
-            # --- Percentile computation at age 8 ---
-            age8_series = df_candidates[f"{ev}_8"].astype(float)
-            p_values = np.percentile(age8_series, percentiles)
-
-            # --- Select representative individuals ---
-            for p, pval in zip(percentiles, p_values):
-
-                diffs = (age8_series - pval).abs()
-                nearest_ids = diffs.nsmallest(
-                    min(top_k_candidates, len(diffs))
-                ).index.tolist()
-
-                chosen_id = random.choice(nearest_ids)
-                results[ev][sex][p] = int(chosen_id)
-
-                # extract running sequence for plotting
-                times = df_candidates.loc[chosen_id, ev_cols].astype(float).values
-
-                ax = axes[plot_idx[(sex, ev)]]
-                ax.plot(
-                    ages, times,
-                    color=colors[p],
-                    marker=markers[p],
-                    label=f"{p}th percentile (ID={chosen_id})"
-                )
-
-            # --- Style subplot ---
-            ax = axes[plot_idx[(sex, ev)]]
-            title_event = "60m dash" if ev == "dash_60m" else "600m run"
-            sex_lbl = "Boys" if sex == 1 else "Girls"
-            ax.set_title(f"{sex_lbl} — {title_event}")
-            ax.set_xlabel("Age (years)")
-            ax.set_ylabel("Time")
-            ax.grid(True, alpha=0.4)
-
-    # --- Finalize ---
-    for ax in axes:
-        ax.set_xticks(ages)
-        ax.legend(fontsize=8)
-
-    plt.tight_layout()
-    plt.show()
-
-    return results
-
-
-def load_flatten(json_path: str, sexes: Iterable[int]) -> pd.DataFrame:
-    """
-    Load once: all FEATURE_POOL across ages 8..18 into columns '<feat>_<age>', plus 'sex'.
-    No target columns are added here—y will be taken from the same columns.
-    """
-    with open(json_path) as f:
-        data = json.load(f)
-
-    recs = []
-    for cid, info in data.items():
-        if sexes and info["sex"] not in sexes:
-            continue
-        row = {"child_id": int(cid), "sex": info["sex"]}
-        for feat in FEATURES:
-            vals = info["data"][feat]  # length 11 for ages 8..18
-            for age, v in zip(range(8, 19), vals):
-                row[f"{feat}_{age}"] = np.nan if v is None else v
-        recs.append(row)
-
-    df = pd.DataFrame.from_records(recs).set_index("child_id")
-    return df
-
+ROOT=Path(__file__).resolve().parent
 
 def plot_percentile_individuals_many(
     df: pd.DataFrame,
@@ -301,28 +183,29 @@ def plot_percentile_individuals_many(
 
 
     plt.tight_layout()
-    plt.show()
+    # Saved by the command-line wrapper below.
 
     return results
 
-FEATURES = [
-    # "height",
-    # "weight",
-    # "triceps_skinfold",
-    # "arm_plate_tapping",
-    # "broad_jump",
-    # "polygon_backwards",
-    # "situps_60s",
-    # "sit_and_reach",
-    # "bent_arm_hang",
-    "dash_60m",
-    "run_600m"
-]
+def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--data',type=Path,default=ROOT/'artifacts'/'data'/'historical_feature_dataset.json')
+    parser.add_argument('--output-dir',type=Path,default=ROOT/'artifacts'/'illustrations')
+    args=parser.parse_args()
+    records=json.loads(args.data.read_text())
+    rows=[]
+    for cid,r in records.items():
+        row={'child_id':int(cid),'sex':r['sex']}
+        for target in ('dash_60m','run_600m'):
+            row.update({f'{target}_{a}':np.nan if v is None else v for a,v in zip(range(8,19),r['data'][target])})
+        rows.append(row)
+    frame=pd.DataFrame(rows).set_index('child_id')
+    args.output_dir.mkdir(parents=True,exist_ok=True)
+    for n in (1,10,100):
+        plot_percentile_individuals_many(frame,top_k_candidates=100,n_per_percentile=n,random_state=42)
+        plt.gcf().savefig(args.output_dir/f'random{n}.png',dpi=200)
+        plt.close()
+    print('Saved 1/10/100-sample illustrations from the supplied input dataset.')
 
-if __name__ == "__main__":
-    json_path = "slofit_refactored_37311.json"
-    sexes = [1, 2]
-    # load once
-    df = load_flatten(json_path, sexes=sexes)
-    plot_percentile_individuals_many(df, top_k_candidates=100, n_per_percentile=100)
 
+if __name__=='__main__':main()
